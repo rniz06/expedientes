@@ -12,11 +12,36 @@ class Comentario extends Component
     use WithPagination;
 
     public Expediente $record;
+    public $expandedIds;
+
+    public function mount()
+    {
+        $this->expandedIds = collect();
+    }
+
+    public function toggleExpand($id)
+    {
+        $comentarioValido = ExpedienteComentario::where('id_expediente_comentario', $id)
+            ->where('comentario_expediente_id', $this->record->id_expediente)
+            ->exists();
+
+        if (!$comentarioValido) {
+            return;
+        }
+
+        $this->expandedIds->contains($id) 
+            ? $this->expandedIds->forget($this->expandedIds->search($id))
+            : $this->expandedIds->push($id);
+    }
 
     public function render()
     {
-        $comentarios = ExpedienteComentario::select('id_expediente_comentario', 'comentario_expediente_id', 'expediente_comentario', 'creador_usuario_id', 'created_at')
-            ->with('creadorComentario:id,name')->where('comentario_expediente_id', $this->record->id)->orderBy('created_at', 'desc')->paginate(3);
-        return view('livewire.comentario', ['comentarios' => $comentarios]);
+        $comentarios = ExpedienteComentario::query()
+            ->with('creadorComentario:id,name')
+            ->where('comentario_expediente_id', $this->record->id_expediente)
+            ->latest()
+            ->paginate(3);
+
+        return view('livewire.comentario', compact('comentarios'));
     }
 }

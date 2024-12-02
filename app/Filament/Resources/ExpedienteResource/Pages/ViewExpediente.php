@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ExpedienteResource\Pages;
 
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Str;
 use Filament\Infolists\Components\Actions\Action as aAction;
 use Filament\Infolists\Components\RepeatableEntry;
@@ -9,6 +10,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use App\Filament\Resources\ExpedienteResource;
 use App\Livewire\Comentario;
+use App\Models\Departamento;
 use App\Models\Expediente;
 use App\Models\Expediente\Archivo as ExpedienteArchivo;
 use App\Models\Expediente\Comentario as ExpedienteComentario;
@@ -44,7 +46,7 @@ class ViewExpediente extends ViewRecord
                     $comentario = new ExpedienteComentario();
 
                     $comentario->expediente_comentario = $data['comentario'];
-                    $comentario->comentario_expediente_id = $record->id;
+                    $comentario->comentario_expediente_id = $record->id_expediente;
                     $comentario->creador_usuario_id = Auth::id();
                     $comentario->save();
                 }),
@@ -56,26 +58,63 @@ class ViewExpediente extends ViewRecord
                 ->form([
                     FileUpload::make('archivo')
                         ->label('')
-                        ->directory(fn(Expediente $record) => 'expedientes/' . $record->created_at->format('Y') . '/' . $record->created_at->format('m') . '/' . Str::slug($record->expediente_asunto))
+                        ->directory(fn(Expediente $record) => 'expedientes/' . $record->created_at->format('Y/m') . '/' . Str::slug($record->expediente_asunto))
                         ->preserveFilenames()
                         ->required(),
                     Textarea::make('descripcion')->label('Descripción')
-
                 ])
                 ->action(function (array $data, Expediente $record) {
+                    // Obtener información del archivo
+                    $filename = basename($data['archivo']);
+                    $fileSize = Storage::disk('public')->size($data['archivo']);
+                    $fileMimeType = Storage::disk('public')->mimeType($data['archivo']);
 
-                    $archivo = new ExpedienteArchivo();
-                    $archivo->archivo_nombre_original = basename($data['archivo']);
-                    $archivo->archivo_nombre_generado = basename($data['archivo']);
-                    $archivo->archivo_ruta = $data['archivo'];
-                    $archivo->archivo_tamano = Storage::disk('public')->size($data['archivo']);
-                    $archivo->archivo_tipo = Storage::disk('public')->mimeType($data['archivo']);
-                    $archivo->archivo_descripcion = $data['descripcion'];
-                    $archivo->archivo_fecha_subida = Carbon::now();
-                    $archivo->archivo_usuario_id = Auth::id();
-                    $archivo->archivo_expediente_id = $record->id_expediente;
-                    $archivo->save();
+                    // Crear archivo con método create
+                    ExpedienteArchivo::create([
+                        'archivo_nombre_original' => $filename,
+                        'archivo_nombre_generado' => $filename,
+                        'archivo_ruta' => $data['archivo'],
+                        'archivo_tamano' => $fileSize,
+                        'archivo_tipo' => $fileMimeType,
+                        'archivo_descripcion' => $data['descripcion'] ?? null,
+                        'archivo_fecha_subida' => now(),
+                        'archivo_usuario_id' => Auth::id(),
+                        'archivo_expediente_id' => $record->id_expediente
+                    ]);
                 }),
+
+            // Logica que crea un boton para abri un modal y Derivar un expediente
+            Action::make('derivar')
+                ->color('gray')
+                ->fillForm(fn(Expediente $record): array => [
+                    'expediente_departamento_id' => $record->expediente_departamento_id,
+                ])
+                ->form([
+                    Select::make('expediente_departamento_id')
+                        ->label('Seleccionar Departamento:')
+                        ->options(Departamento::pluck('departamento_nombre', 'id_departamento'))
+                        ->searchable()
+                        ->preload()
+                        ->required(),
+                ])
+                ->action(function (array $data, Expediente $record) {
+                    // Obtener el usuario autenticado, el departamento antiguo y el nuevo departameto
+                    $usuario = Auth::user();
+                    $departamentoViejo = $record->departamento->departamento_nombre;
+                    $departamentoNuevo = Departamento::findOrFail($data['expediente_departamento_id'])->departamento_nombre;
+
+                    // Actualizar el expediente de manera más concisa
+                    $record->update([
+                        'expediente_departamento_id' => $data['expediente_departamento_id']
+                    ]);
+
+                    // Crear el comentario en una sola línea
+                    ExpedienteComentario::create([
+                        'expediente_comentario' => "{$usuario->name} derivó el expediente de {$departamentoViejo} a {$departamentoNuevo}",
+                        'comentario_expediente_id' => $record->id_expediente,
+                        'creador_usuario_id' => $usuario->id,
+                    ]);
+                })
 
         ];
     }

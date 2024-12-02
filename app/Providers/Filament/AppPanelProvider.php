@@ -56,6 +56,11 @@ class AppPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->maxContentWidth(MaxWidth::Full)
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            ->brandLogo(asset('img/cbvp-logo-png.webp'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('img/cbvp-logo-png.webp'))
+            ->authPasswordBroker('users');
+            //->topNavigation();
     }
 }
