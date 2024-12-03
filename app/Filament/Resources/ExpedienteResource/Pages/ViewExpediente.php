@@ -14,6 +14,7 @@ use App\Models\Departamento;
 use App\Models\Expediente;
 use App\Models\Expediente\Archivo as ExpedienteArchivo;
 use App\Models\Expediente\Comentario as ExpedienteComentario;
+use App\Models\Expediente\Estado as ExpedienteEstado;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Actions\Action;
@@ -114,7 +115,26 @@ class ViewExpediente extends ViewRecord
                         'comentario_expediente_id' => $record->id_expediente,
                         'creador_usuario_id' => $usuario->id,
                     ]);
-                })
+                }),
+
+            // Logica que crea un boton para abri un modal y dar por finalizado el tramite del expediente
+            Action::make('finalizar')
+                ->color('gray')
+                ->requiresConfirmation()
+                ->action(function (array $data, Expediente $record) {
+                    $usuario = Auth::user();
+                    $estadoFinalizado = ExpedienteEstado::where('expediente_estado', 'FINALIZADO')->firstOrFail();
+
+                    $record->update([
+                        'expediente_estado_id' => $estadoFinalizado->id_expediente_estado
+                    ]);
+
+                    ExpedienteComentario::create([
+                        'expediente_comentario' => "{$usuario->name} dio por finalizado el tramite de este expediente.",
+                        'comentario_expediente_id' => $record->id_expediente,
+                        'creador_usuario_id' => Auth::id()
+                    ]);
+                }),
 
         ];
     }
@@ -130,6 +150,7 @@ class ViewExpediente extends ViewRecord
                             ->schema([
                                 TextEntry::make('expediente_asunto')->label('Asunto:'),
                                 TextEntry::make('mesa_entrada_completa')->label('N° Mesa Entrada:')->badge(),
+                                TextEntry::make('estado.expediente_estado')->label('N° Mesa Entrada:')->badge(),
                                 TextEntry::make('ciudadano.nombre_completo')->label('Responsable:'),
                                 TextEntry::make('departamento.departamento_nombre')->label('Dirección Actual:')->badge(),
                                 RepeatableEntry::make('archivos')
