@@ -14,6 +14,7 @@ use App\Models\Departamento;
 use App\Models\Expediente;
 use App\Models\Expediente\Archivo as ExpedienteArchivo;
 use App\Models\Expediente\Comentario as ExpedienteComentario;
+use App\Models\Expediente\DepartamentoHistorial;
 use App\Models\Expediente\Estado as ExpedienteEstado;
 use Carbon\Carbon;
 use Filament\Actions;
@@ -99,23 +100,40 @@ class ViewExpediente extends ViewRecord
                         ->required(),
                 ])
                 ->action(function (array $data, Expediente $record) {
-                    // Obtener el usuario autenticado, el departamento antiguo y el nuevo departameto
                     $usuario = Auth::user();
-                    $departamentoViejo = $record->departamento->departamento_nombre;
-                    $departamentoNuevo = Departamento::findOrFail($data['expediente_departamento_id'])->departamento_nombre;
+                    $departamentoViejoId = $record->expediente_departamento_id;
+                    $departamentoNuevoId = $data['expediente_departamento_id'];
 
-                    // Actualizar el expediente de manera más concisa
-                    $record->update([
-                        'expediente_departamento_id' => $data['expediente_departamento_id']
-                    ]);
+                    // Obtener nombres de departamentos antes de la actualización
+                    $departamentoViejo = $departamentoViejoId
+                        ? Departamento::findOrFail($departamentoViejoId)->departamento_nombre
+                        : 'Sin asignar';
+                    $departamentoNuevo = Departamento::findOrFail($departamentoNuevoId)->departamento_nombre;
 
-                    // Crear el comentario en una sola línea
-                    ExpedienteComentario::create([
-                        'expediente_comentario' => "{$usuario->name} derivó el expediente de {$departamentoViejo} a {$departamentoNuevo}",
-                        'comentario_expediente_id' => $record->id_expediente,
-                        'creador_usuario_id' => $usuario->id,
-                    ]);
+                    // Realizar todas las operaciones en una transacción
+                    DB::transaction(function () use ($record, $departamentoViejoId, $departamentoNuevoId, $usuario, $departamentoViejo, $departamentoNuevo) {
+                        // Actualizar el expediente
+                        $record->update([
+                            'expediente_departamento_id' => $departamentoNuevoId,
+                        ]);
+
+                        // Registrar el historial
+                        DepartamentoHistorial::create([
+                            'expediente_id' => $record->id_expediente,
+                            'departamento_origen_id' => $departamentoViejoId,
+                            'departamento_destino_id' => $departamentoNuevoId,
+                            'usuario_id' => $usuario->id,
+                        ]);
+
+                        // Crear el comentario
+                        ExpedienteComentario::create([
+                            'expediente_comentario' => "{$usuario->name} derivó el expediente de {$departamentoViejo} a {$departamentoNuevo}",
+                            'comentario_expediente_id' => $record->id_expediente,
+                            'creador_usuario_id' => $usuario->id,
+                        ]);
+                    });
                 }),
+
 
             // Logica que crea un boton para abri un modal y dar por finalizado el tramite del expediente
             Action::make('finalizar')
