@@ -20,10 +20,13 @@ class Expedientes extends Component
             'prefijo' => 'required',
             'expediente' => 'required',
         ]);
-        //$this->prefijo = "CBVP-2023";
-        $query = $this->prefijo . '-' . $this->expediente;
-        //$query = "CBVP-2024-00001";
-        $this->resultado = ExpedienteVt::where('mesa_entrada_completa', $query)->first();
+        // Se concatena el prefijo con el nro  de expediente para arma el campo mesa_entrada_completa
+        $query = sprintf('%s-%s', $this->prefijo, $this->expediente);
+
+        $this->resultado = ExpedienteVt::where([
+            'mesa_entrada_completa' => $query,
+            'ciudadano_ci' => $this->documento
+        ])->first();
 
         if (!$this->resultado) {
             session()->flash('message', 'Expediente no encontrado.');
@@ -31,7 +34,11 @@ class Expedientes extends Component
     }
     public function render()
     {
-        $prefijoAnhoExp = Expediente::distinct()->orderBy('mesa_entrada_prefix_anho', 'desc')->pluck('mesa_entrada_prefix_anho', 'mesa_entrada_prefix_anho')->toArray();
+        $prefijoAnhoExp = Expediente::orderByDesc('mesa_entrada_prefix_anho')
+            ->pluck('mesa_entrada_prefix_anho')
+            ->unique()
+            ->toArray();
+
         return view('livewire.expedientes', compact('prefijoAnhoExp'));
     }
 }
