@@ -28,6 +28,9 @@ class CreateExpediente extends CreateRecord
         // Extrae solo el año (del índice 5 al 8, en este caso '2024')
         $data['mesa_entrada_anho'] = substr($data['mesa_entrada_completa'], 5, 4);
 
+        // Obtiene el prefijo y el año (CBVP-2024)
+        $data['mesa_entrada_prefix_anho'] = substr($data['mesa_entrada_completa'], 0, 9);
+
         return $data;
     }
 }

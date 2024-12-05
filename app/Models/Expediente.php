@@ -20,7 +20,8 @@ class Expediente extends Model
     protected $fillable = [
         'expediente_asunto',
         'mesa_entrada_completa',
-        'nro_mesa_entrada',
+        'mesa_entrada_prefix_anho',
+        'nro_mesa_entrada',        
         'nro_mesa_entrada_anho',
         'mesa_entrada_anho',
         'expediente_estado_id',
