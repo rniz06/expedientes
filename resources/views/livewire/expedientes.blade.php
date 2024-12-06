@@ -28,13 +28,13 @@
                         <select wire:model="prefijo" name="prefijo"
                             class="w-full px-8 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
                             <option value="">Seleccionar...</option>
-                            @foreach ($prefijoAnhoExp as $prefijo)                                
+                            @foreach ($prefijoAnhoExp as $prefijo)
                                 <option value="{{ $prefijo }}">{{ $prefijo }}</option>
                             @endforeach
                         </select>
                         <input wire:model="expediente" name="expediente"
                             class="w-full px-8 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                            type="text" placeholder="Nro. Expediente" required/>
+                            type="text" placeholder="Nro. Expediente" required />
                         @error('expediente')
                             <p>{{ $error }}</p>
                         @enderror
@@ -58,7 +58,18 @@
                         </p>
                     </form>
                     @if (session()->has('message'))
-                        <div class="text-center text-red-500 mt-4">{{ session('message') }}</div>
+                        <div class="flex items-center p-4 mb-4 mt-2 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <span class="sr-only">Info</span>
+                            <div>
+                                <span class="font-medium">{{ session('message') }}</span>
+                            </div>
+                        </div>
                     @endif
                     @if ($errors->any())
                         <div class="mt-4 text-red-500">
