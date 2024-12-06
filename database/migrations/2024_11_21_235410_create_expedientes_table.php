@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_expediente');
             $table->string('expediente_asunto');
             $table->string('mesa_entrada_completa')->unique();
-            $table->string('mesa_entrada_prefix_anho', 20)->nullable()->after('mesa_entrada_completa');
+            $table->string('mesa_entrada_prefix_anho', 20)->nullable();
             $table->string('nro_mesa_entrada');
             $table->string('nro_mesa_entrada_anho')->unique();
             $table->string('mesa_entrada_anho');
