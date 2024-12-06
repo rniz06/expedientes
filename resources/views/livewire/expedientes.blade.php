@@ -1,4 +1,4 @@
-<div class="min-h-screen flex flex-col justify-center items-center gap-4 p-4 bg-gray-100">
+<div class="h-screen flex flex-col justify-center items-center gap-4 p-4 bg-yellow-400">
     <div
         class="flex flex-col lg:flex-row justify-center items-center border w-full max-w-5xl bg-white rounded-lg shadow-lg">
         <!-- Logo -->
