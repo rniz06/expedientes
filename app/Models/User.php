@@ -24,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'departamento_id',
     ];
 
     /**
@@ -83,5 +84,14 @@ class User extends Authenticatable
     public function ciudadanos()
     {
         return $this->hasMany(Ciudadano::class);
+    }
+
+    /**
+     * Relación de "User" a "Departamento" (uno a muchos inverso).
+     * Cada Usuario pertenece a un Departamento.
+     */
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class, 'departamento_id');
     }
 }

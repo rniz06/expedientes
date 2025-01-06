@@ -28,18 +28,23 @@ class UserResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Nombre')
+                            ->label('Nombre:')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('email')
-                            ->label('Email')
+                            ->label('Email:')
                             ->email()
                             ->required()
                             ->maxLength(255),
-                        // Forms\Components\DateTimePicker::make('email_verified_at'),
+                        Forms\Components\Select::make('departamento_id')
+                            ->label('Departamento:')
+                            ->relationship('departamento', 'departamento_nombre')
+                            ->preload()
+                            ->searchable(),
                         Forms\Components\TextInput::make('password')
-                            ->label('Contraseña')
+                            ->label('Contraseña:')
                             ->password()
+                            ->hiddenOn('edit')
                             ->required()
                             ->maxLength(255),
                     ])->columns(2),
@@ -55,6 +60,10 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email:')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('departamento.departamento_nombre')
+                    ->label('Departamento:')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado El:')

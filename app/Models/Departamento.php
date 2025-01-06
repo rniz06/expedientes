@@ -20,4 +20,10 @@ class Departamento extends Model
     {
         return $this->hasMany(Expediente::class);
     }
+
+    // Relación: Un Departemanto tiene varios Usuarios
+    public function usuarios()
+    {
+        return $this->hasMany(Expediente::class);
+    }
 }
