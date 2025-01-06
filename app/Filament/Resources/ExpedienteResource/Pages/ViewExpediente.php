@@ -60,8 +60,10 @@ class ViewExpediente extends ViewRecord
                 ->form([
                     FileUpload::make('archivo')
                         ->label('')
-                        ->directory(fn(Expediente $record) => 'expedientes/' . $record->created_at->format('Y/m') . '/' . Str::slug($record->expediente_asunto))
+                        ->directory(fn(Expediente $record) => 'expedientes/' . $record->created_at->format('Y') . '/' . Str::slug($record->expediente_asunto))
                         ->preserveFilenames()
+                        ->uploadingMessage('Cargando Archivo...')
+                        ->maxSize(20480)
                         ->required(),
                     Textarea::make('descripcion')->label('Descripción')
                 ])
