@@ -125,8 +125,8 @@ class ExpedienteResource extends Resource
                                             ->required()
                                     ])->columns(3)
                             ]),
-                        Forms\Components\Toggle::make('acceso_restringido')->default(false)
-                            ->required(),
+                        //Forms\Components\Toggle::make('acceso_restringido')->default(false)
+                        //    ->required(),
                     ])->columns(2)
             ]);
     }
@@ -170,8 +170,8 @@ class ExpedienteResource extends Resource
                     ->label('Responsable:')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\IconColumn::make('acceso_restringido')
-                    ->boolean(),
+                // Tables\Columns\IconColumn::make('acceso_restringido')
+                //     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha Ingreso')
                     ->dateTime()
@@ -227,7 +227,7 @@ class ExpedienteResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery()
-            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'acceso_restringido', 'created_at', 'updated_at')
+            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'created_at', 'updated_at')
             //->with(['estado:id_expediente_estado, expediente_estado', 'prioridad:id_expediente_prioridad,expediente_prioridad', 'departamento:id_departamento, departamento_nombre', 'ciudadano:id_ciudadano, nombre_completo']);
             ->with(['estado', 'prioridad', 'departamento', 'ciudadano', 'comentarios'])->orderBy('created_at', 'desc');
 

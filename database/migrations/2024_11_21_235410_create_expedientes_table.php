@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('expediente_prioridad_id')->nullable();
             $table->unsignedBigInteger('expediente_departamento_id')->nullable();
             $table->unsignedBigInteger('expediente_ciudadano_id')->nullable();
-            $table->boolean('acceso_restringido')->default(false);
+            //$table->boolean('acceso_restringido')->default(false);
             $table->timestamps();
 
             $table->foreign('expediente_estado_id')->references('id_expediente_estado')->on('expedientes_estados')->onUpdate('cascade')->onDelete('set null');

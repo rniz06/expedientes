@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // CREAR USUARIO ADMINISTRADOR
         $user = User::create([
             'name' => 'Ronald Niz',
-            'email' => 'ronaldalexisniznunez@gmail.com',
+            'email' => 'ti@cbvp.org.py',
             'password' => Hash::make('Rann2006')
         ]);
 

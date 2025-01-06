@@ -29,7 +29,6 @@ class Expediente extends Model
         'expediente_departamento_id',
         'expediente_ciudadano_id',
         'agrego_usuario_id',
-        'acceso_restringido',
     ];
 
     // Relación: Un Expediente tiene un solo Estado
