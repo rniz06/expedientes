@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ExpedienteResource\Pages;
 
 use App\Filament\Resources\ExpedienteResource;
+use App\Models\Departamento;
 use App\Models\Expediente\Estado as ExpedienteEstado;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -23,6 +24,8 @@ class CreateExpediente extends CreateRecord
 
         $recien_ingresado_id = ExpedienteEstado::where('expediente_estado', 'EN PROGRESO')->first();
 
+        $secretaria_nacional_id = Departamento::where('departamento_nombre', 'SECRETARIA NACIONAL')->first();
+
         // Elimina los primeros 10 caracteres (CBVP-2024-)
         $data['nro_mesa_entrada'] = substr($data['mesa_entrada_completa'], 10);
 
@@ -36,6 +39,8 @@ class CreateExpediente extends CreateRecord
         $data['mesa_entrada_prefix_anho'] = substr($data['mesa_entrada_completa'], 0, 9);
 
         $data['expediente_estado_id'] = $recien_ingresado_id->id_expediente_estado;
+
+        $data['expediente_departamento_id'] = $secretaria_nacional_id->id_departamento;
 
         return $data;
     }

@@ -47,12 +47,12 @@ class ExpedienteResource extends Resource
                             ->relationship('prioridad', 'expediente_prioridad')
                             ->optionsLimit(15)
                             ->required(),
-                        Forms\Components\Select::make('expediente_departamento_id')
-                            ->label('Departamento:')
-                            ->relationship('departamento', 'departamento_nombre')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                        // Forms\Components\Select::make('expediente_departamento_id')
+                        //     ->label('Departamento:')
+                        //     ->relationship('departamento', 'departamento_nombre')
+                        //     ->searchable()
+                        //     ->preload()
+                        //     ->required(),
                         Forms\Components\Select::make('expediente_ciudadano_id')
                             ->label('Responsable:')
                             ->relationship('ciudadano', 'nombre_completo')
