@@ -75,4 +75,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(ExpedienteArchivo::class);  // Relación "uno a muchos" con la tabla de barrios
     }
+
+    /**
+     * Relación de "User" a "Ciudadano" (uno a muchos).
+     * Un User puede agregar muchos Ciudadanos.
+     */
+    public function ciudadanos()
+    {
+        return $this->hasMany(Ciudadano::class);
+    }
 }

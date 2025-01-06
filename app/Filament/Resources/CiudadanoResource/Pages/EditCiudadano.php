@@ -18,4 +18,18 @@ class EditCiudadano extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return CiudadanoResource::getUrl('index');
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['nombre_completo'] = $data['nombres'] . ' ' . $data['apellidos'];
+
+        $data['actualizado_por'] = auth()->id();
+
+        return $data;
+    }
 }

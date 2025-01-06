@@ -25,6 +25,8 @@ class Ciudadano extends Model
         'tipo_persona',
         'barrio_id',
         'ciudad_id',
+        'creado_por',
+        'actualizado_por',
     ];
 
     // Relación: Un Ciudadano pertenece a un Barrio
@@ -43,6 +45,18 @@ class Ciudadano extends Model
     public function expedientes()
     {
         return $this->hasMany(Expediente::class);
+    }
+
+    // Relación: Un Registro de ciudadano puede ser agregado por un solo usuario
+    public function creadoPor()
+    {
+        return $this->belongsTo(User::class, 'creado_por');
+    }
+
+    // Relación: Un Registro de ciudadano puede ser agregado por un solo usuario
+    public function actualizadoPor()
+    {
+        return $this->belongsTo(User::class, 'actualizado_por');
     }
 
 }

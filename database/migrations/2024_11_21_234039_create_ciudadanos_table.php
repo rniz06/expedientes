@@ -24,10 +24,14 @@ return new class extends Migration
             $table->enum('tipo_persona', ['PERSONA FÍSICA', 'PERSONA JURÍDICA']);
             $table->unsignedBigInteger('barrio_id')->nullable();
             $table->unsignedBigInteger('ciudad_id')->nullable();
+            $table->unsignedBigInteger('creado_por')->nullable();
+            $table->unsignedBigInteger('actualizado_por')->nullable();
             $table->timestamps();
 
             $table->foreign('barrio_id')->references('id_barrio')->on('ciudades_barrios')->onDelete('set null');
             $table->foreign('ciudad_id')->references('id_ciudad')->on('ciudades')->onDelete('set null');
+            $table->foreign('creado_por')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('actualizado_por')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

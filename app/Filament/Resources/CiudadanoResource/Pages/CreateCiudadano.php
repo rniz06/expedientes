@@ -21,6 +21,8 @@ class CreateCiudadano extends CreateRecord
     {
         $data['nombre_completo'] = $data['nombres'] . ' ' . $data['apellidos'];
 
+        $data['creado_por'] = auth()->id();
+
         return $data;
     }
 }

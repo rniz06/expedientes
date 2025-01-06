@@ -122,7 +122,8 @@ class ExpedienteResource extends Resource
                                                 'PERSONA FÍSICA' => 'PERSONA FÍSICA',
                                                 'PERSONA JURÍDICA' => 'PERSONA JURÍDICA',
                                             ])
-                                            ->required()
+                                            ->required(),
+                                            Forms\Components\Hidden::make('creado_por')->default(auth()->id())
                                     ])->columns(3)
                             ]),
                         //Forms\Components\Toggle::make('acceso_restringido')->default(false)

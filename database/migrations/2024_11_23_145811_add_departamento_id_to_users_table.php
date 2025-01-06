@@ -18,7 +18,7 @@ return new class extends Migration
                 ->references('id_departamento')
                 ->on('departamentos')
                 ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onDelete('set null');
         });
     }
 
