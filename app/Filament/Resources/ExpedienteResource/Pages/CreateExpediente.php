@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ExpedienteResource\Pages;
 
 use App\Filament\Resources\ExpedienteResource;
+use App\Models\Expediente\Estado as ExpedienteEstado;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -19,6 +20,9 @@ class CreateExpediente extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+
+        $recien_ingresado_id = ExpedienteEstado::where('expediente_estado', 'EN PROGRESO')->first();
+
         // Elimina los primeros 10 caracteres (CBVP-2024-)
         $data['nro_mesa_entrada'] = substr($data['mesa_entrada_completa'], 10);
 
@@ -30,6 +34,8 @@ class CreateExpediente extends CreateRecord
 
         // Obtiene el prefijo y el año (CBVP-2024)
         $data['mesa_entrada_prefix_anho'] = substr($data['mesa_entrada_completa'], 0, 9);
+
+        $data['expediente_estado_id'] = $recien_ingresado_id->id_expediente_estado;
 
         return $data;
     }

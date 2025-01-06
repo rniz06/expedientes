@@ -38,10 +38,10 @@ class ExpedienteResource extends Resource
                             ->required()
                             ->maxLength(20)
                             ->readOnly(),
-                        Forms\Components\Select::make('expediente_estado_id')
-                            ->label('Estado:')
-                            ->relationship('estado', 'expediente_estado')
-                            ->required(),
+                        // Forms\Components\Select::make('expediente_estado_id')
+                        //     ->label('Estado:')
+                        //     ->relationship('estado', 'expediente_estado')
+                        //     ->required(),
                         Forms\Components\Select::make('expediente_prioridad_id')
                             ->label('Nivel de Prioridad:')
                             ->relationship('prioridad', 'expediente_prioridad')

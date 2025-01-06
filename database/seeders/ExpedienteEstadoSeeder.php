@@ -16,7 +16,6 @@ class ExpedienteEstadoSeeder extends Seeder
     {
         //
         $estados = [
-            'RECIEN INGRESADO',
             'EN PROGRESO',
             'FINALIZADO',
         ];
