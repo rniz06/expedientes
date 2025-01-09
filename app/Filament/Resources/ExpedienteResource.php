@@ -7,6 +7,7 @@ use App\Filament\Resources\ExpedienteResource\RelationManagers;
 use App\Models\Expediente;
 use App\Models\Expediente\Comentario;
 use App\Models\Expediente\Prioridad as ExpedientePrioridad;
+use App\Services\Expediente\NroMesaEntradaGenerador;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -34,7 +35,8 @@ class ExpedienteResource extends Resource
                             ->maxLength(255),
                         Forms\Components\TextInput::make('mesa_entrada_completa')
                             ->label('N° Mesa de Entrada')
-                            ->default(fn() => static::nroMesaEntradaGenerador())
+                            //->default(fn() => static::nroMesaEntradaGenerador())
+                            ->default(NroMesaEntradaGenerador::nroMesaEntradaGenerador())
                             ->required()
                             ->maxLength(20)
                             ->readOnly(),
@@ -239,30 +241,6 @@ class ExpedienteResource extends Resource
         // }
 
         return $query;
-    }
-
-    public static function nroMesaEntradaGenerador()
-    {
-        $anho = date('Y'); // Año completo, por ejemplo, "2024"
-        $prefijo = "CBVP";
-
-        // Obtener el último expediente que coincida con el año actual
-        $ultimoExpediente = Expediente::where('mesa_entrada_completa', 'like', "{$prefijo}-{$anho}-%")
-            ->orderBy('id_expediente', 'desc') // Asegurarse de obtener el último registro
-            ->first();
-
-        if ($ultimoExpediente) {
-            // Extraer el número después del año
-            $partes = explode('-', $ultimoExpediente->mesa_entrada_completa);
-            $numeroActual = end($partes); // Tomar la última parte (el número)
-            $nuevoNumero = str_pad((int)$numeroActual + 1, 5, '0', STR_PAD_LEFT); // Incrementar y rellenar con ceros
-        } else {
-            // Si no hay registros para el año actual, empezar desde el 1
-            $nuevoNumero = "00001";
-        }
-
-        // Devolver el nuevo número en el formato requerido
-        return "{$prefijo}-{$anho}-{$nuevoNumero}";
     }
 
     public static function getRelations(): array
