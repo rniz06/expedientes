@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ExpedienteResource\Pages;
 use App\Filament\Resources\ExpedienteResource;
 use App\Models\Departamento;
 use App\Models\Expediente\Estado as ExpedienteEstado;
+use App\Models\Expediente\TipoGestion;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -41,6 +42,23 @@ class CreateExpediente extends CreateRecord
         $data['expediente_estado_id'] = $recien_ingresado_id->id_expediente_estado;
 
         $data['expediente_departamento_id'] = $secretaria_nacional_id->id_departamento;
+
+        // Si el tipo de fuente es INTERNA (id = 1)
+        if ($data['tipo_fuente_id'] == 1) {
+            // Obtener el TipoGestion seleccionado
+            $tipoGestion = TipoGestion::find($data['tipo_gestion_id']);
+
+            if ($tipoGestion) {
+                // Construir el texto del asunto
+                $asunto = $tipoGestion->tipo_gestion;
+                if ($tipoGestion->descripcion) {
+                    $asunto .= ' (' . $tipoGestion->descripcion . ')';
+                }
+
+                // Asignar el asunto construido al expediente_asunto
+                $data['expediente_asunto'] = $asunto;
+            }
+        }
 
         return $data;
     }

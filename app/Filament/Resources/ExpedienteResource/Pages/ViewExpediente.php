@@ -150,7 +150,7 @@ class ViewExpediente extends ViewRecord
                     ]);
 
                     ExpedienteComentario::create([
-                        'expediente_comentario' => "{$usuario->name} dio por finalizado el tramite de este expediente.",
+                        'expediente_comentario' => "{$usuario->name} dio por finalizado el trámite de este expediente.",
                         'comentario_expediente_id' => $record->id_expediente,
                         'creador_usuario_id' => Auth::id()
                     ]);

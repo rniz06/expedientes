@@ -7,6 +7,8 @@ use App\Filament\Resources\ExpedienteResource\RelationManagers;
 use App\Models\Expediente;
 use App\Models\Expediente\Comentario;
 use App\Models\Expediente\Prioridad as ExpedientePrioridad;
+use App\Models\Expediente\TipoFuente;
+use App\Models\Expediente\TipoGestion;
 use App\Services\Expediente\NroMesaEntradaGenerador;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,10 +31,55 @@ class ExpedienteResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
+                        Forms\Components\Select::make('tipo_fuente_id')
+                            ->label('Tipo de fuente:')
+                            ->relationship('tipoFuente', 'tipo_fuente')
+                            ->columnSpan(2)
+                            ->live()
+                            ->required(),
+                    ]),
+                Forms\Components\Section::make()
+                    ->schema([
+
                         Forms\Components\TextInput::make('expediente_asunto')
                             ->label('Asunto:')
                             ->required()
+                            ->visible(function (Forms\Get $get) {
+                                return $get('tipo_fuente_id') == 2; // Visible cuando es EXTERNA
+                            })
+                            ->requiredIf('tipo_fuente_id', 2)
                             ->maxLength(255),
+                        Forms\Components\Select::make('tipo_gestion_id')
+                            ->label('Asunto:')
+                            ->options(TipoGestion::all()->mapWithKeys(function ($tipoGestion) {
+                                // Construir la opción combinada
+                                $label = $tipoGestion->tipo_gestion;
+                                // Si 'descripcion' no es null, agregarla entre paréntesis
+                                if ($tipoGestion->descripcion) {
+                                    $label .= ' (' . $tipoGestion->descripcion . ')';
+                                }
+                                return [$tipoGestion->id_tipo_gestion => $label];
+                            }))
+                            ->visible(function (Forms\Get $get) {
+                                return $get('tipo_fuente_id') == 1; // Visible cuando es INTERNA
+                            })
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                                if ($get('tipo_fuente_id') == 1 && $state) { // Si es INTERNA y hay un valor seleccionado
+                                    // Obtener el TipoGestion seleccionado
+                                    $tipoGestion = TipoGestion::find($state);
+                                    if ($tipoGestion) {
+                                        // Construir el texto del asunto
+                                        $asunto = $tipoGestion->tipo_gestion;
+                                        if ($tipoGestion->descripcion) {
+                                            $asunto .= ' (' . $tipoGestion->descripcion . ')';
+                                        }
+                                        // Actualizar el campo expediente_asunto
+                                        $set('expediente_asunto', $asunto);
+                                    }
+                                }
+                            })
+                            ->required(),
                         Forms\Components\TextInput::make('mesa_entrada_completa')
                             ->label('N° Mesa de Entrada')
                             //->default(fn() => static::nroMesaEntradaGenerador())
@@ -125,7 +172,7 @@ class ExpedienteResource extends Resource
                                                 'PERSONA JURÍDICA' => 'PERSONA JURÍDICA',
                                             ])
                                             ->required(),
-                                            Forms\Components\Hidden::make('creado_por')->default(auth()->id())
+                                        Forms\Components\Hidden::make('creado_por')->default(auth()->id())
                                     ])->columns(3)
                             ]),
                         //Forms\Components\Toggle::make('acceso_restringido')->default(false)

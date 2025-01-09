@@ -15,7 +15,7 @@ class ExpedienteTipoFuenteSeeder extends Seeder
     public function run(): void
     {
         $tipo_fuentes = [
-            'INTERNA',
+            'INTERNO',
             'EXTERNA',
         ];
 
