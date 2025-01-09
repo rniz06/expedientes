@@ -6,6 +6,8 @@ use App\Models\Expediente\Archivo;
 use App\Models\Expediente\Comentario;
 use App\Models\Expediente\Estado as ExpedienteEstado;
 use App\Models\Expediente\Prioridad;
+use App\Models\Expediente\TipoFuente;
+use App\Models\Expediente\TipoGestion;
 use Illuminate\Database\Eloquent\Model;
 
 class Expediente extends Model
@@ -24,11 +26,13 @@ class Expediente extends Model
         'nro_mesa_entrada',        
         'nro_mesa_entrada_anho',
         'mesa_entrada_anho',
+        'tipo_fuente_id',
+        'tipo_gestion_id',
         'expediente_estado_id',
         'expediente_prioridad_id',
         'expediente_departamento_id',
         'expediente_ciudadano_id',
-        'agrego_usuario_id',
+        'agrego_usuario_id',        
     ];
 
     // Relación: Un Expediente tiene un solo Estado
@@ -77,5 +81,23 @@ class Expediente extends Model
     public function archivos()
     {
         return $this->hasMany(Archivo::class, 'archivo_expediente_id', 'id_expediente');  // Relación "uno a muchos" con la tabla de barrios
+    }
+
+        /**
+     * Relación de "TipoFuente" a "Expediente" (uno a muchos inverso).
+     * Cada expediente tiene un solo tipo de fuente (INTERNA O EXTENA).
+     */
+    public function tipoFuente()
+    {
+        return $this->belongsTo(TipoFuente::class, 'tipo_fuente_id');
+    }
+
+    /**
+     * Relación de "TipoGestion" a "Expediente" (uno a muchos inverso).
+     * Cada expediente tiene un solo tipo de gestion.
+     */
+    public function tipoGestion()
+    {
+        return $this->belongsTo(TipoGestion::class, 'tipo_gestion_id');
     }
 }
