@@ -208,6 +208,11 @@ class ExpedienteResource extends Resource
                     ->badge()
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('tipoFuente.tipo_fuente')
+                    ->label('Fuente:')
+                    ->badge()
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('estado.expediente_estado')
                     ->label('Estado:')
                     ->badge()
@@ -301,9 +306,9 @@ class ExpedienteResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery()
-            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'created_at', 'updated_at')
+            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'tipo_fuente_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'created_at', 'updated_at')
             //->with(['estado:id_expediente_estado, expediente_estado', 'prioridad:id_expediente_prioridad,expediente_prioridad', 'departamento:id_departamento, departamento_nombre', 'ciudadano:id_ciudadano, nombre_completo']);
-            ->with(['estado', 'prioridad', 'departamento', 'ciudadano', 'comentarios'])->orderBy('created_at', 'desc');
+            ->with(['estado', 'prioridad', 'departamento', 'ciudadano', 'comentarios', 'tipoFuente'])->orderBy('expediente_prioridad_id', 'desc')->orderBy('created_at', 'desc');
 
         $user = Auth::user();
 

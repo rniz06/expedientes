@@ -16,7 +16,7 @@ class ExpedienteTipoFuenteSeeder extends Seeder
     {
         $tipo_fuentes = [
             'INTERNO',
-            'EXTERNA',
+            'EXTERNO',
         ];
 
         // Iterar sobre el array de estados y insertar cada una en la base de datos
