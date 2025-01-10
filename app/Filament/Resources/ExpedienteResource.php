@@ -9,6 +9,7 @@ use App\Models\Expediente\Comentario;
 use App\Models\Expediente\Prioridad as ExpedientePrioridad;
 use App\Models\Expediente\TipoFuente;
 use App\Models\Expediente\TipoGestion;
+use App\Models\Vistas\Personal as VistaPersonal;
 use App\Services\Expediente\NroMesaEntradaGenerador;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -81,7 +82,7 @@ class ExpedienteResource extends Resource
                             })
                             ->required(),
                         Forms\Components\TextInput::make('mesa_entrada_completa')
-                            ->label('N° Mesa de Entrada')
+                            ->label('N° Mesa de Entrada:')
                             //->default(fn() => static::nroMesaEntradaGenerador())
                             ->default(NroMesaEntradaGenerador::nroMesaEntradaGenerador())
                             ->required()
@@ -102,12 +103,24 @@ class ExpedienteResource extends Resource
                         //     ->searchable()
                         //     ->preload()
                         //     ->required(),
+                        Forms\Components\Select::make('personal_id')
+                            ->label('Responsable:')
+                            ->visible(function (Forms\Get $get) {
+                                return $get('tipo_fuente_id') == 1; // Visible cuando es INTERNA
+                            })
+                            ->required()
+                            ->options(VistaPersonal::obtenerNombreCodigoCategoria())
+                            ->searchable()
+                            ->preload(),
                         Forms\Components\Select::make('expediente_ciudadano_id')
                             ->label('Responsable:')
                             ->relationship('ciudadano', 'nombre_completo')
                             ->searchable()
                             ->preload()
                             ->required()
+                            ->visible(function (Forms\Get $get) {
+                                return $get('tipo_fuente_id') == 2; // Visible cuando es EXTERNA
+                            })
                             ->createOptionForm([
                                 Forms\Components\Section::make('Añadir un nuevo Registro Ciudadano')
                                     ->schema([
@@ -216,16 +229,27 @@ class ExpedienteResource extends Resource
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('ciudadano.nombre_completo')
-                    ->label('Responsable:')
-                    ->searchable()
-                    ->sortable(),
-                // Tables\Columns\IconColumn::make('acceso_restringido')
-                //     ->boolean(),
+                // Tables\Columns\TextColumn::make('ciudadano.nombre_completo')
+                //     ->label('Responsable:')
+                //     ->visible()
+                //     ->searchable()
+                //     ->sortable(),
+                //  Tables\Columns\TextColumn::make('mostrarNombrePersonal') // Usa el método que has definido
+                //      ->label('Responsable:')
+                //      ->getStateUsing(fn($record) => $record->mostrarNombrePersonal()),
+                // Tables\Columns\ColumnGroup::make('Responsable:', [
+                //     Tables\Columns\TextColumn::make('mostrarNombrePersonal') // Usa el método que has definido
+                //     ->label('')
+                //     ->getStateUsing(fn($record) => $record->mostrarNombrePersonal()),
+                //     Tables\Columns\TextColumn::make('ciudadano.nombre_completo')
+                //         ->visible()
+                //         ->label('')
+                //         ->searchable()
+                //         ->sortable(),
+                // ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha Ingreso')
-                    ->dateTime()
-                    ->sortable(),
+                    ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -277,7 +301,7 @@ class ExpedienteResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery()
-            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'created_at', 'updated_at')
+            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'created_at', 'updated_at')
             //->with(['estado:id_expediente_estado, expediente_estado', 'prioridad:id_expediente_prioridad,expediente_prioridad', 'departamento:id_departamento, departamento_nombre', 'ciudadano:id_ciudadano, nombre_completo']);
             ->with(['estado', 'prioridad', 'departamento', 'ciudadano', 'comentarios'])->orderBy('created_at', 'desc');
 
