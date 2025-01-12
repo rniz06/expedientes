@@ -47,6 +47,20 @@ Sistema de gestion de Expedientes Electronicos desarrollado con laravel utilizan
 
 ¡Listo! Ahora puedes acceder al sistema en tu navegador web.
 
+# OBSERVACIONES:
+
+Verificar que los permisos, roles y policies del paquete se hallan generado correctamente, en caso que no, ejecutar los siguientes comandos:
+
+    ```bash
+    php artisan shield:generate --all
+    ```
+    Genera devuelta todos los permisos, roles y policies.
+
+    ```bash
+    php artisan shield:super-admin
+    ```
+    Comando para seleccionar usuario administrador.
+    
 # Uso
 
 Una vez instalado, puedes iniciar sesión en el sistema utilizando las siguientes credenciales:
