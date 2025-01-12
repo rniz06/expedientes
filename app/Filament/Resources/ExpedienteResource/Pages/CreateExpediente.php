@@ -8,6 +8,7 @@ use App\Models\Expediente\Estado as ExpedienteEstado;
 use App\Models\Expediente\TipoGestion;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateExpediente extends CreateRecord
 {
@@ -59,6 +60,9 @@ class CreateExpediente extends CreateRecord
                 $data['expediente_asunto'] = $asunto;
             }
         }
+
+        // Elimina los primeros 10 caracteres (CBVP-2024-)
+        $data['agrego_usuario_id'] = Auth::id();
 
         return $data;
     }

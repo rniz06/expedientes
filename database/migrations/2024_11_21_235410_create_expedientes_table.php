@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('expediente_departamento_id')->nullable();
             $table->unsignedBigInteger('expediente_ciudadano_id')->nullable();
             $table->unsignedBigInteger('personal_id')->nullable();
+            $table->unsignedBigInteger('agrego_usuario_id')->nullable();
             //$table->boolean('acceso_restringido')->default(false);
             $table->timestamps();
 
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->foreign('expediente_prioridad_id')->references('id_expediente_prioridad')->on('expedientes_prioridades')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('expediente_departamento_id')->references('id_departamento')->on('departamentos')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('expediente_ciudadano_id')->references('id_ciudadano')->on('ciudadanos')->onUpdate('cascade')->onDelete('set null');
+            $table->foreign('agrego_usuario_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

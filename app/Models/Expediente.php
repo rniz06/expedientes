@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\ExpedienteObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Models\Expediente\Archivo;
 use App\Models\Expediente\Comentario;
 use App\Models\Expediente\Estado as ExpedienteEstado;
@@ -11,6 +13,7 @@ use App\Models\Expediente\TipoGestion;
 use App\Models\Vistas\Personal as VistaPersonal;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([ExpedienteObserver::class])]
 class Expediente extends Model
 {
     // Tabla asociada al modelo
