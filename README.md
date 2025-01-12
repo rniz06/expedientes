@@ -1,6 +1,6 @@
 # Sistema de Gestión de Expedientes Electronicos
 
-Sistema de gestion de Expedientes Electronicos desarrollado con laravel utilizando ademas el paquete filament
+Sistema de gestion de ** Expedientes Electronicos ** desarrollado con laravel utilizando ademas el paquete filament
 
 ## Tecnologías
 - Laravel 11
@@ -54,13 +54,13 @@ Verificar que los permisos, roles y policies del paquete se hallan generado corr
     ```bash
     php artisan shield:generate --all
     ```
-    Genera devuelta todos los permisos, roles y policies.
+Genera devuelta todos los permisos, roles y policies.
 
     ```bash
     php artisan shield:super-admin
     ```
-    Comando para seleccionar usuario administrador.
-    
+Comando para seleccionar usuario administrador.
+
 # Uso
 
 Una vez instalado, puedes iniciar sesión en el sistema utilizando las siguientes credenciales:
