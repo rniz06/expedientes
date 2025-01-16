@@ -92,11 +92,11 @@ class ExpedienteResource extends Resource
                         //     ->label('Estado:')
                         //     ->relationship('estado', 'expediente_estado')
                         //     ->required(),
-                        Forms\Components\Select::make('expediente_prioridad_id')
-                            ->label('Nivel de Prioridad:')
-                            ->relationship('prioridad', 'expediente_prioridad')
-                            ->optionsLimit(15)
-                            ->required(),
+                        // Forms\Components\Select::make('expediente_prioridad_id')
+                        //     ->label('Nivel de Prioridad:')
+                        //     ->relationship('prioridad', 'expediente_prioridad')
+                        //     ->optionsLimit(15)
+                        //     ->required(),
                         // Forms\Components\Select::make('expediente_departamento_id')
                         //     ->label('Departamento:')
                         //     ->relationship('departamento', 'departamento_nombre')
@@ -218,17 +218,17 @@ class ExpedienteResource extends Resource
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('prioridad.expediente_prioridad')
-                    ->label('Prioridad:')
-                    ->badge()
-                    ->colors([
-                        'secondary' => 'BAJO',
-                        'success' => 'MEDIO',
-                        'warning' => 'ALTO',
-                        'danger' => 'URGENTE',
-                    ])
-                    ->searchable()
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('prioridad.expediente_prioridad')
+                //     ->label('Prioridad:')
+                //     ->badge()
+                //     ->colors([
+                //         'secondary' => 'BAJO',
+                //         'success' => 'MEDIO',
+                //         'warning' => 'ALTO',
+                //         'danger' => 'URGENTE',
+                //     ])
+                //     ->searchable()
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('departamento.departamento_nombre')
                     ->label('Ubicación:')
                     ->badge()
@@ -271,10 +271,10 @@ class ExpedienteResource extends Resource
                     })->preload(),
 
                 // FILTRAR POR PRIORIDAD
-                Tables\Filters\SelectFilter::make('expediente_prioridad_id')
-                    ->label('Prioridad:')
+                Tables\Filters\SelectFilter::make('tipo_fuente_id')
+                    ->label('Fuente:')
                     ->options(function () {
-                        return \App\Models\Expediente\Prioridad::pluck('expediente_prioridad', 'id_expediente_prioridad')->toArray();
+                        return \App\Models\Expediente\TipoFuente::pluck('tipo_fuente', 'id_tipo_fuente')->toArray();
                     })->preload(),
 
                 // FILTRAR POR UBICACION

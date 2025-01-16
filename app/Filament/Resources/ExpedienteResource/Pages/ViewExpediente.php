@@ -170,7 +170,7 @@ class ViewExpediente extends ViewRecord
                             ->schema([
                                 TextEntry::make('expediente_asunto')->label('Asunto:'),
                                 TextEntry::make('mesa_entrada_completa')->label('N° Mesa Entrada:')->badge(),
-                                TextEntry::make('estado.expediente_estado')->label('N° Mesa Entrada:')->badge(),
+                                TextEntry::make('estado.expediente_estado')->label('Estado:')->badge(),
                                 TextEntry::make('ciudadano.nombre_completo')->label('Responsable:'),
                                 TextEntry::make('departamento.departamento_nombre')->label('Dirección Actual:')->badge(),
                                 RepeatableEntry::make('archivos')
