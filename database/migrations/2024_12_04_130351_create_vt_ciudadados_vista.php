@@ -12,6 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement("DROP VIEW IF EXISTS `vt_ciudadanos`");
         DB::statement("
             CREATE OR REPLACE VIEW `vt_ciudadanos` AS
                 SELECT 
@@ -43,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("DROP VIEW IF EXISTS `vt_ciudadanos`");
+        //DB::statement("DROP VIEW IF EXISTS `vt_ciudadanos`");
     }
 };

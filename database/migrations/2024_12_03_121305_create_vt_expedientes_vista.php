@@ -12,6 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement("DROP VIEW IF EXISTS `vt_expedientes`");
         DB::statement("
             CREATE VIEW `vt_expedientes` AS
             SELECT 
@@ -40,8 +41,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        DB::statement("DROP VIEW IF EXISTS `vt_expedientes`");
-    }
+    // public function down(): void
+    // {
+    //     DB::statement("DROP VIEW IF EXISTS `vt_expedientes`");
+    // }
 };

@@ -17,6 +17,7 @@ class ExpedienteEstadoSeeder extends Seeder
         //
         $estados = [
             'EN PROGRESO',
+            'DERIVADO',
             'FINALIZADO',
         ];
 
