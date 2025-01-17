@@ -105,6 +105,7 @@ class ViewExpediente extends ViewRecord
                     $usuario = Auth::user();
                     $departamentoViejoId = $record->expediente_departamento_id;
                     $departamentoNuevoId = $data['expediente_departamento_id'];
+                    $estadoDerivado = ExpedienteEstado::where('expediente_estado', 'DERIVADO')->first();
 
                     // Obtener nombres de departamentos antes de la actualización
                     $departamentoViejo = $departamentoViejoId
@@ -113,10 +114,11 @@ class ViewExpediente extends ViewRecord
                     $departamentoNuevo = Departamento::findOrFail($departamentoNuevoId)->departamento_nombre;
 
                     // Realizar todas las operaciones en una transacción
-                    DB::transaction(function () use ($record, $departamentoViejoId, $departamentoNuevoId, $usuario, $departamentoViejo, $departamentoNuevo) {
+                    DB::transaction(function () use ($record, $departamentoViejoId, $departamentoNuevoId, $usuario, $departamentoViejo, $departamentoNuevo, $estadoDerivado) {
                         // Actualizar el expediente
                         $record->update([
                             'expediente_departamento_id' => $departamentoNuevoId,
+                            'expediente_estado_id' => $estadoDerivado->id_expediente_estado,
                         ]);
 
                         // Registrar el historial

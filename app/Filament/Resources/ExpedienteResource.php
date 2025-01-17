@@ -2,10 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Notifications\Notification;
 use App\Filament\Resources\ExpedienteResource\Pages;
 use App\Filament\Resources\ExpedienteResource\RelationManagers;
+use App\Models\Departamento;
 use App\Models\Expediente;
-use App\Models\Expediente\Comentario;
+use App\Models\Expediente\Comentario as ExpedienteComentario;
+use App\Models\Expediente\DepartamentoHistorial;
+use App\Models\Expediente\Estado as ExpedienteEstado;
 use App\Models\Expediente\Prioridad as ExpedientePrioridad;
 use App\Models\Expediente\TipoFuente;
 use App\Models\Expediente\TipoGestion;
@@ -19,6 +23,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ExpedienteResource extends Resource
 {
@@ -294,6 +299,85 @@ class ExpedienteResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('aceptar')
+                    ->visible(function (Expediente $record) {
+                        return $record->estado->expediente_estado === 'DERIVADO';
+                    })
+                    ->requiresConfirmation()
+                    ->action(function (Expediente $record) {
+                        $usuario = Auth::user();
+                        // Usar cache para el estado si se consulta frecuentemente
+                        $estadoEnProgreso = cache()->remember('estado_en_progreso', 3600, function () {
+                            return ExpedienteEstado::where('expediente_estado', 'EN PROGRESO')->first();
+                        });
+                        DB::transaction(function () use ($record, $estadoEnProgreso, $usuario) {
+                            // Actualizar expediente y crear comentario en una sola transacción
+                            $record->update([
+                                'expediente_estado_id' => $estadoEnProgreso->id_expediente_estado,
+                            ]);
+                            ExpedienteComentario::create([
+                                'expediente_comentario' => "{$usuario->name} aceptó la derivación del expediente al departamento",
+                                'comentario_expediente_id' => $record->id_expediente,
+                                'creador_usuario_id' => $usuario->id,
+                            ]);
+                        });
+                    }),
+                Tables\Actions\Action::make('rechazar')
+                    ->visible(function (Expediente $record) {
+                        return $record->estado->expediente_estado === 'DERIVADO';
+                    })
+                    ->form([
+                        Forms\Components\Textarea::make('motivo')
+                            ->label('Motivo del Rechazo')
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Expediente $record) {
+                        $usuario = Auth::user();
+                        $motivo = $data['motivo'];
+
+                        // Obtener el último registro del historial para este expediente
+                        $ultimaDerivacion = DepartamentoHistorial::where('expediente_id', $record->id_expediente)
+                            ->latest()
+                            ->first();
+                        // Obtener los nombres de los departamentos para el mensaje
+                        $departamentoActual = Departamento::find($record->expediente_departamento_id)->departamento_nombre;
+                        $departamentoAnterior = Departamento::find($ultimaDerivacion->departamento_origen_id)->departamento_nombre;
+
+                        // Obtener el estado en progreso
+                        $estadoEnProgreso = ExpedienteEstado::where('expediente_estado', 'EN PROGRESO')->first();
+
+                        DB::transaction(function () use ($record, $usuario, $motivo, $ultimaDerivacion, $departamentoActual, $departamentoAnterior, $estadoEnProgreso) {
+
+                            // Registrar el rechazo en el historial
+                            DepartamentoHistorial::create([
+                                'expediente_id' => $record->id_expediente,
+                                'departamento_origen_id' => $record->expediente_departamento_id,
+                                'departamento_destino_id' => $ultimaDerivacion->departamento_origen_id,
+                                'usuario_id' => $usuario->id,
+                            ]);
+
+                            // Actualizar el expediente al departamento anterior
+                            $record->update([
+                                'expediente_departamento_id' => $ultimaDerivacion->departamento_origen_id,
+                                'expediente_estado_id' => $estadoEnProgreso->id_expediente_estado,
+                            ]);
+
+
+
+                            // Crear el comentario del rechazo
+                            ExpedienteComentario::create([
+                                'expediente_comentario' => "{$usuario->name} rechazó la derivación del expediente de {$departamentoActual} y lo devolvió a {$departamentoAnterior}. Motivo: {$motivo}",
+                                'comentario_expediente_id' => $record->id_expediente,
+                                'creador_usuario_id' => $usuario->id,
+                            ]);
+                        });
+
+                        Notification::make()
+                            ->title('Expediente rechazado')
+                            ->body('El expediente ha sido devuelto al departamento anterior.')
+                            ->success()
+                            ->send();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -312,9 +396,9 @@ class ExpedienteResource extends Resource
 
         $user = Auth::user();
 
-        // if (!$user->hasRole('super_admin')) {
-        //     $query->where('departamento_id', $user->departamento_id);
-        // }
+        if (!$user->hasRole(['super_admin', 'mesa_de_entrada'])) {
+            $query->where('expediente_departamento_id', $user->departamento_id);
+        }
 
         return $query;
     }
