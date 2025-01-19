@@ -94,6 +94,7 @@ class DepartamentoSeeder extends Seeder
             "DPTO. SEG. Y BIENESTAR",
             "DPTO. TECNOLOGÍA E INNOVACIÓN",
             "PRESIDENCIA NACIONAL",
+            "RECEPCIÓN DE SECRETARIA NACIONAL",
             "SECRETARIA NACIONAL",
             "TESORERIA NACIONAL"
         ];

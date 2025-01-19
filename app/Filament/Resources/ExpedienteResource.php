@@ -57,34 +57,28 @@ class ExpedienteResource extends Resource
                             ->maxLength(255),
                         Forms\Components\Select::make('tipo_gestion_id')
                             ->label('Asunto:')
-                            ->options(TipoGestion::all()->mapWithKeys(function ($tipoGestion) {
-                                // Construir la opción combinada
-                                $label = $tipoGestion->tipo_gestion;
-                                // Si 'descripcion' no es null, agregarla entre paréntesis
-                                if ($tipoGestion->descripcion) {
-                                    $label .= ' (' . $tipoGestion->descripcion . ')';
-                                }
-                                return [$tipoGestion->id_tipo_gestion => $label];
-                            }))
+                            ->relationship('tipoGestion', 'tipo_y_descripcion')
                             ->visible(function (Forms\Get $get) {
                                 return $get('tipo_fuente_id') == 1; // Visible cuando es INTERNA
                             })
                             ->live()
+                            ->preload()
                             ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                                 if ($get('tipo_fuente_id') == 1 && $state) { // Si es INTERNA y hay un valor seleccionado
                                     // Obtener el TipoGestion seleccionado
                                     $tipoGestion = TipoGestion::find($state);
                                     if ($tipoGestion) {
-                                        // Construir el texto del asunto
-                                        $asunto = $tipoGestion->tipo_gestion;
-                                        if ($tipoGestion->descripcion) {
-                                            $asunto .= ' (' . $tipoGestion->descripcion . ')';
-                                        }
                                         // Actualizar el campo expediente_asunto
-                                        $set('expediente_asunto', $asunto);
+                                        $set('expediente_asunto', $tipoGestion->tipo_y_descripcion);
                                     }
                                 }
                             })
+                            // ->createOptionForm([
+                            //     Forms\Components\TextInput::make('tipo_gestion')
+                            //         ->required(),
+                            //     Forms\Components\TextInput::make('descripcion'),
+                            //     Forms\Components\TextInput::make('tipo_y_descripcion')->hidden(true)->default('NO DEFINIDO'),
+                            // ])
                             ->required(),
                         Forms\Components\TextInput::make('mesa_entrada_completa')
                             ->label('N° Mesa de Entrada:')
@@ -93,21 +87,6 @@ class ExpedienteResource extends Resource
                             ->required()
                             ->maxLength(20)
                             ->readOnly(),
-                        // Forms\Components\Select::make('expediente_estado_id')
-                        //     ->label('Estado:')
-                        //     ->relationship('estado', 'expediente_estado')
-                        //     ->required(),
-                        // Forms\Components\Select::make('expediente_prioridad_id')
-                        //     ->label('Nivel de Prioridad:')
-                        //     ->relationship('prioridad', 'expediente_prioridad')
-                        //     ->optionsLimit(15)
-                        //     ->required(),
-                        // Forms\Components\Select::make('expediente_departamento_id')
-                        //     ->label('Departamento:')
-                        //     ->relationship('departamento', 'departamento_nombre')
-                        //     ->searchable()
-                        //     ->preload()
-                        //     ->required(),
                         Forms\Components\Select::make('personal_id')
                             ->label('Responsable:')
                             ->visible(function (Forms\Get $get) {
@@ -116,7 +95,9 @@ class ExpedienteResource extends Resource
                             ->required()
                             ->options(VistaPersonal::obtenerNombreCodigoCategoria())
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->searchDebounce(1000)
+                            ->optionsLimit(20),
                         Forms\Components\Select::make('expediente_ciudadano_id')
                             ->label('Responsable:')
                             ->relationship('ciudadano', 'nombre_completo')
@@ -223,17 +204,6 @@ class ExpedienteResource extends Resource
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                // Tables\Columns\TextColumn::make('prioridad.expediente_prioridad')
-                //     ->label('Prioridad:')
-                //     ->badge()
-                //     ->colors([
-                //         'secondary' => 'BAJO',
-                //         'success' => 'MEDIO',
-                //         'warning' => 'ALTO',
-                //         'danger' => 'URGENTE',
-                //     ])
-                //     ->searchable()
-                //     ->sortable(),
                 Tables\Columns\TextColumn::make('departamento.departamento_nombre')
                     ->label('Ubicación:')
                     ->badge()

@@ -25,9 +25,11 @@ class ExpedienteTipoGestionSeeder extends Seeder
 
         // Iterar sobre el array de estados y insertar cada una en la base de datos
         foreach ($tipo_gestiones as $tipo_gestion => $descripcion) {
+            $tipo_y_descripcion = $descripcion ? "{$tipo_gestion} ({$descripcion})" : $tipo_gestion;
             DB::table('expedientes_tipo_gestiones')->insert([
                 'tipo_gestion' => $tipo_gestion,
                 'descripcion' => $descripcion,
+                'tipo_y_descripcion' => $tipo_y_descripcion,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

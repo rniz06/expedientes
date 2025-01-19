@@ -17,6 +17,7 @@ class TipoGestion extends Model
     protected $fillable = [
         'tipo_gestion',
         'descripcion',
+        'tipo_y_descripcion',
     ];
 
     /**

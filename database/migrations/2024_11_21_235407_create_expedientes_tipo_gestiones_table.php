@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_tipo_gestion');
             $table->string('tipo_gestion', 50);
             $table->string('descripcion', 100)->nullable();
+            $table->string('tipo_y_descripcion', 150)->nullable();
             $table->timestamps();
         });
     }
