@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_expediente_prioridad');
             $table->string('expediente_prioridad', 30);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

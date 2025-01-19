@@ -23,7 +23,8 @@ class NroMesaEntradaGenerador
         $prefijo = "CBVP";
 
         // Obtener el último expediente que coincida con el año actual
-        $ultimoExpediente = Expediente::where('mesa_entrada_completa', 'like', "{$prefijo}-{$anho}-%")
+        $ultimoExpediente = Expediente::withTrashed()
+            ->where('mesa_entrada_completa', 'like', "{$prefijo}-{$anho}-%")
             ->orderBy('id_expediente', 'desc') // Asegurarse de obtener el último registro
             ->first();
 

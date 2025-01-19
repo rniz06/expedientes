@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_tipo_fuente');
             $table->string('tipo_fuente', 20);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

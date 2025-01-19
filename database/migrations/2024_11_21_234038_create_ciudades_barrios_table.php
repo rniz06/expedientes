@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('barrio_nombre', 50);
             $table->unsignedBigInteger('barrio_ciudad_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('barrio_ciudad_id')->references('id_ciudad')->on('ciudades')->onUpdate('cascade')->onDelete('set null');
         });

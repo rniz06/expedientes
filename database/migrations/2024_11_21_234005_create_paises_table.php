@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('pais_nombre', 50);
             $table->string('pais_siglas', 10)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -174,8 +174,8 @@ class ExpedienteResource extends Resource
                                         Forms\Components\Hidden::make('creado_por')->default(auth()->id())
                                     ])->columns(3)
                             ]),
-                        //Forms\Components\Toggle::make('acceso_restringido')->default(false)
-                        //    ->required(),
+                        Forms\Components\Toggle::make('acceso_restringido')->default(false)
+                            ->required(),
                     ])->columns(2)
             ]);
     }
@@ -351,7 +351,7 @@ class ExpedienteResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->paginated([5, 10, 15, 20])->defaultPaginationPageOption(5);

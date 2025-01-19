@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('archivo_usuario_id')->nullable();
             $table->unsignedBigInteger('archivo_expediente_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('archivo_usuario_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('archivo_expediente_id')->references('id_expediente')->on('expedientes')->onUpdate('cascade')->onDelete('set null');

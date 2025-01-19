@@ -2,11 +2,15 @@
 
 namespace App\Models\Expediente;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Expediente;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class TipoGestion extends Model
+class TipoGestion extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
     // Tabla asociada al modelo
     protected $table = "expedientes_tipo_gestiones";  // Nombre de la tabla en la base de datos
 

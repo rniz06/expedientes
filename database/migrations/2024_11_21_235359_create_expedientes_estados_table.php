@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_expediente_estado');
             $table->string('expediente_estado', 30);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -2,12 +2,17 @@
 
 namespace App\Models\Expediente;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Expediente;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
-class Archivo extends Model
+class Archivo extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    
     // Tabla asociada al modelo
     protected $table = "expedientes_archivos";  // Nombre de la tabla en la base de datos
 

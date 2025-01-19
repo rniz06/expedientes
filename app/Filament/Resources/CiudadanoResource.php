@@ -116,7 +116,7 @@ class CiudadanoResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])->paginated([5, 10, 15, 20, 25])->defaultPaginationPageOption(5);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Observers\ExpedienteObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Models\Expediente\Archivo;
@@ -14,8 +16,10 @@ use App\Models\Vistas\Personal as VistaPersonal;
 use Illuminate\Database\Eloquent\Model;
 
 #[ObservedBy([ExpedienteObserver::class])]
-class Expediente extends Model
+class Expediente extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
     // Tabla asociada al modelo
     protected $table = "expedientes";  // Nombre de la tabla en la base de datos
 

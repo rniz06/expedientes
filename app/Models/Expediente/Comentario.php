@@ -2,12 +2,16 @@
 
 namespace App\Models\Expediente;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Models\Expediente;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
-class Comentario extends Model
+class Comentario extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
     // Tabla asociada al modelo
     protected $table = "expedientes_comentarios";  // Nombre de la tabla en la base de datos
 

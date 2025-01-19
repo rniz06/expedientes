@@ -27,8 +27,9 @@ return new class extends Migration
             $table->unsignedBigInteger('expediente_ciudadano_id')->nullable();
             $table->unsignedBigInteger('personal_id')->nullable();
             $table->unsignedBigInteger('agrego_usuario_id')->nullable();
-            //$table->boolean('acceso_restringido')->default(false);
+            $table->boolean('acceso_restringido')->default(false);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('tipo_fuente_id')->references('id_tipo_fuente')->on('expedientes_tipo_fuentes')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('tipo_gestion_id')->references('id_tipo_gestion')->on('expedientes_tipo_gestiones')->onUpdate('cascade')->onDelete('set null');

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('creador_usuario_id')->nullable();
             $table->unsignedBigInteger('actualizacion_usuario_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('comentario_expediente_id')->references('id_expediente')->on('expedientes')->onUpdate('cascade')->onDelete('set null');
             $table->foreign('creador_usuario_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
