@@ -175,6 +175,7 @@ class ViewExpediente extends ViewRecord
                                 TextEntry::make('estado.expediente_estado')->label('Estado:')->badge(),
                                 TextEntry::make('ciudadano.nombre_completo')->label('Responsable:'),
                                 TextEntry::make('departamento.departamento_nombre')->label('Dirección Actual:')->badge(),
+                                TextEntry::make('departamentosConCopia.departamento_nombre')->label('Con Copia a:')->badge(),
                                 RepeatableEntry::make('archivos')
                                     ->schema([
                                         TextEntry::make('archivo_nombre_original')->label('')->badge()->openUrlInNewTab()
