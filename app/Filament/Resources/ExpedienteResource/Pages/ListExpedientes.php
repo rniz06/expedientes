@@ -30,8 +30,26 @@ class ListExpedientes extends ListRecords
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoEnProgreso->id_expediente_estado)),
             'derivado' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoDerivado->id_expediente_estado)),
+            //'con_copia' => Tab::make()
+            //    ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoDerivado->id_expediente_estado)),
             // 'con_copia' => Tab::make()
-            //     ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoDerivado->id_expediente_estado)),
+            //     ->modifyQueryUsing(
+            //         fn(Builder $query) =>
+            //         $query->whereIn('id_expediente', function ($subquery) {
+            //             $subquery->select('expediente_id')
+            //                 ->from('expedientes_departamentos_concopia')
+            //                 ->where('departamento_id', auth()->user()->departamento_id);
+            //         })
+            //     ),
+            'con_copia' => Tab::make()
+                ->modifyQueryUsing(
+                    fn(Builder $query) =>
+                    $query->whereIn('id_expediente', function ($subquery) {
+                        $subquery->select('expediente_id')
+                            ->from('expedientes_departamentos_concopia')
+                            ->where('departamento_id', auth()->user()->departamento_id);
+                    })
+                ),
             'finalizados' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoFinalizadoId->id_expediente_estado)),
             'todos' => Tab::make(),
