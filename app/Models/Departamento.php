@@ -10,7 +10,7 @@ class Departamento extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
-    
+
     // Tabla asociada al modelo
     protected $table = "departamentos";  // Nombre de la tabla en la base de datos
 
@@ -30,5 +30,17 @@ class Departamento extends Model implements Auditable
     public function usuarios()
     {
         return $this->hasMany(Expediente::class);
+    }
+
+    // Relación para expedientes con copia
+    public function expedientesConCopia()
+    {
+        return $this->belongsToMany(
+            Expediente::class,
+            'expedientes_departamentos_concopia',
+            'departamento_id',
+            'expediente_id'
+        )
+            ->withTimestamps();
     }
 }

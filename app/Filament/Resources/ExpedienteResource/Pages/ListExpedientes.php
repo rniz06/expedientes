@@ -30,6 +30,8 @@ class ListExpedientes extends ListRecords
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoEnProgreso->id_expediente_estado)),
             'derivado' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoDerivado->id_expediente_estado)),
+            // 'con_copia' => Tab::make()
+            //     ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoDerivado->id_expediente_estado)),
             'finalizados' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('expediente_estado_id', $estadoFinalizadoId->id_expediente_estado)),
             'todos' => Tab::make(),

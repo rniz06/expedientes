@@ -21,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Relationship;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -174,8 +175,15 @@ class ExpedienteResource extends Resource
                                         Forms\Components\Hidden::make('creado_por')->default(auth()->id())
                                     ])->columns(3)
                             ]),
+
+                        Forms\Components\Select::make('departamentosConCopia')
+                            ->label('Con Copia a:')
+                            ->multiple()
+                            ->relationship('departamentosConCopia', 'departamento_nombre')
+                            ->searchable()
+                            ->preload(),
                         Forms\Components\Toggle::make('acceso_restringido')->default(false)
-                            ->required(),
+                            ->required()
                     ])->columns(2)
             ]);
     }

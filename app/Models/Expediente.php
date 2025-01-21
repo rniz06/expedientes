@@ -139,4 +139,16 @@ class Expediente extends Model implements Auditable
         // Devuelve el nombre completo o un valor predeterminado si no se encuentra
         return $personal ? $personal->nombrecompleto . ' - ' . $personal->codigo . ' - ' . $personal->categoria : 'No encontrado';
     }
+
+    // Relación para departamentos con copia
+    public function departamentosConCopia()
+    {
+        return $this->belongsToMany(
+            Departamento::class,
+            'expedientes_departamentos_concopia', // nombre de la tabla pivote
+            'expediente_id',                      // clave foránea del modelo actual
+            'departamento_id'
+        )                    // clave foránea del modelo relacionado
+            ->withTimestamps();                   // si tienes timestamps en la tabla pivote
+    }
 }
