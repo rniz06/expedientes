@@ -157,8 +157,7 @@ class ExpedienteResource extends Resource
                                             ->label('Ciudad:')
                                             ->relationship('ciudad', 'ciudad_nombre')
                                             ->searchable()
-                                            ->preload()
-                                            ->required(),
+                                            ->preload(),
                                         Forms\Components\Select::make('tipo_persona')
                                             ->options([
                                                 'PERSONA FÍSICA' => 'PERSONA FÍSICA',
