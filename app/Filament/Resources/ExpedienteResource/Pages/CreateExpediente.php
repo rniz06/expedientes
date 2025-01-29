@@ -44,23 +44,6 @@ class CreateExpediente extends CreateRecord
 
         $data['expediente_departamento_id'] = $secretaria_nacional_id->id_departamento;
 
-        // Si el tipo de fuente es INTERNA (id = 1)
-        if ($data['tipo_fuente_id'] == 1) {
-            // Obtener el TipoGestion seleccionado
-            $tipoGestion = TipoGestion::find($data['tipo_gestion_id']);
-
-            if ($tipoGestion) {
-                // Construir el texto del asunto
-                $asunto = $tipoGestion->tipo_gestion;
-                if ($tipoGestion->descripcion) {
-                    $asunto .= ' (' . $tipoGestion->descripcion . ')';
-                }
-
-                // Asignar el asunto construido al expediente_asunto
-                $data['expediente_asunto'] = $asunto;
-            }
-        }
-
         // Elimina los primeros 10 caracteres (CBVP-2024-)
         $data['agrego_usuario_id'] = Auth::id();
 

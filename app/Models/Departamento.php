@@ -18,7 +18,7 @@ class Departamento extends Model implements Auditable
     protected $primaryKey = 'id_departamento';  // Campo que actúa como clave primaria
 
     // Campos asignables masivamente
-    protected $fillable = ['departamento_nombre', 'departamento_descripcion'];  // Campos que se pueden llenar en masa
+    protected $fillable = ['departamento_nombre', 'departamento_correo'];  // Campos que se pueden llenar en masa
 
     // Relación: Un Departemanto tiene varios Expedientes
     public function expedientes()

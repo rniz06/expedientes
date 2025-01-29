@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('nombres', 50);
             $table->string('apellidos', 50)->nullable();
             $table->string('nombre_completo', 100)->nullable();
-            $table->string('ci', 15)->unique();
+            $table->string('ci', 15)->unique()->nullable();
             $table->string('ruc', 20)->unique()->nullable();
             $table->string('telefono', 20)->nullable();
-            $table->string('email', 50)->nullable();
+            $table->string('email', 50)->unique()->nullable();
             $table->string('direccion_particular', 70)->nullable();
-            $table->enum('tipo_persona', ['PERSONA FÍSICA', 'PERSONA JURÍDICA']);
+            $table->enum('tipo_persona', ['PERSONA FÍSICA', 'PERSONA JURÍDICA'])->nullable();
             $table->unsignedBigInteger('barrio_id')->nullable();
             $table->unsignedBigInteger('ciudad_id')->nullable();
             $table->unsignedBigInteger('creado_por')->nullable();

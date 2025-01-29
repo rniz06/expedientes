@@ -14,6 +14,7 @@ use App\Models\Expediente\Prioridad as ExpedientePrioridad;
 use App\Models\Expediente\TipoFuente;
 use App\Models\Expediente\TipoGestion;
 use App\Models\Vistas\Personal as VistaPersonal;
+use App\Models\Vistas\VtCompania;
 use App\Services\Expediente\NroMesaEntradaGenerador;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -41,57 +42,32 @@ class ExpedienteResource extends Resource
                         Forms\Components\Select::make('tipo_fuente_id')
                             ->label('Tipo de fuente:')
                             ->relationship('tipoFuente', 'tipo_fuente')
-                            ->columnSpan(2)
                             ->live()
                             ->required(),
-                    ]),
+                        Forms\Components\Select::make('tipo_titular_id')
+                            ->label('Tipo de Titular:')
+                            ->relationship('tipoTitular', 'tipo_titular')
+                            ->live()
+                            ->required(),
+                    ])->columns(2),
                 Forms\Components\Section::make()
                     ->schema([
 
                         Forms\Components\TextInput::make('expediente_asunto')
                             ->label('Asunto:')
                             ->required()
-                            ->visible(function (Forms\Get $get) {
-                                return $get('tipo_fuente_id') == 2; // Visible cuando es EXTERNA
-                            })
-                            ->requiredIf('tipo_fuente_id', 2)
+                            ->required()
                             ->maxLength(255),
-                        Forms\Components\Select::make('tipo_gestion_id')
-                            ->label('Asunto:')
-                            ->relationship('tipoGestion', 'tipo_y_descripcion')
-                            ->visible(function (Forms\Get $get) {
-                                return $get('tipo_fuente_id') == 1; // Visible cuando es INTERNA
-                            })
-                            ->live()
-                            ->preload()
-                            ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
-                                if ($get('tipo_fuente_id') == 1 && $state) { // Si es INTERNA y hay un valor seleccionado
-                                    // Obtener el TipoGestion seleccionado
-                                    $tipoGestion = TipoGestion::find($state);
-                                    if ($tipoGestion) {
-                                        // Actualizar el campo expediente_asunto
-                                        $set('expediente_asunto', $tipoGestion->tipo_y_descripcion);
-                                    }
-                                }
-                            })
-                            // ->createOptionForm([
-                            //     Forms\Components\TextInput::make('tipo_gestion')
-                            //         ->required(),
-                            //     Forms\Components\TextInput::make('descripcion'),
-                            //     Forms\Components\TextInput::make('tipo_y_descripcion')->hidden(true)->default('NO DEFINIDO'),
-                            // ])
-                            ->required(),
                         Forms\Components\TextInput::make('mesa_entrada_completa')
                             ->label('N° Mesa de Entrada:')
                             //->default(fn() => static::nroMesaEntradaGenerador())
                             ->default(NroMesaEntradaGenerador::nroMesaEntradaGenerador())
                             ->required()
-                            ->maxLength(20)
-                            ->readOnly(),
+                            ->maxLength(20),
                         Forms\Components\Select::make('personal_id')
-                            ->label('Responsable:')
+                            ->label('Titular:')
                             ->visible(function (Forms\Get $get) {
-                                return $get('tipo_fuente_id') == 1; // Visible cuando es INTERNA
+                                return $get('tipo_titular_id') == 2; // Visible cuando tipo_titular_id es igual a 2 BOMBEROS
                             })
                             ->required()
                             ->options(VistaPersonal::obtenerNombreCodigoCategoria())
@@ -99,14 +75,34 @@ class ExpedienteResource extends Resource
                             ->preload()
                             ->searchDebounce(1000)
                             ->optionsLimit(20),
+                        Forms\Components\Select::make('tit_departameto_id')
+                            ->label('Titular:')
+                            ->relationship('departamentoTitular', 'departamento_nombre')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->visible(function (Forms\Get $get) {
+                                return $get('tipo_titular_id') == 4; // Visible cuando tipo_titular_id es igual a 4 DEPARTAMENTOS
+                            }),
+                        Forms\Components\Select::make('tit_compania_id')
+                            ->label('Titular:')
+                            ->visible(function (Forms\Get $get) {
+                                return $get('tipo_titular_id') == 3; // Visible cuando tipo_titular_id es igual a 2 BOMBEROS
+                            })
+                            ->required()
+                            ->options(VtCompania::obtenerCompaniaDepartamentoCiudad())
+                            ->searchable()
+                            ->preload()
+                            ->searchDebounce(1000)
+                            ->optionsLimit(20),
                         Forms\Components\Select::make('expediente_ciudadano_id')
-                            ->label('Responsable:')
+                            ->label('Titular:')
                             ->relationship('ciudadano', 'nombre_completo')
                             ->searchable()
                             ->preload()
                             ->required()
                             ->visible(function (Forms\Get $get) {
-                                return $get('tipo_fuente_id') == 2; // Visible cuando es EXTERNA
+                                return $get('tipo_titular_id') == 1; // Visible cuando tipo_titular_id es igual a 2 CIUDADANOS
                             })
                             ->createOptionForm([
                                 Forms\Components\Section::make('Añadir un nuevo Registro Ciudadano')
@@ -127,7 +123,6 @@ class ExpedienteResource extends Resource
                                         Forms\Components\TextInput::make('apellidos')
                                             ->label('Apellidos:')
                                             ->placeholder('Ej: PEREZ GAMARRA')
-                                            ->required()
                                             ->maxLength(255)
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
@@ -141,7 +136,6 @@ class ExpedienteResource extends Resource
                                         Forms\Components\TextInput::make('ci')
                                             ->label('CI:')
                                             ->placeholder('* Sin puntos ni comas Ej: 1234567')
-                                            ->required()
                                             ->maxLength(15),
                                         Forms\Components\TextInput::make('ruc')
                                             ->placeholder('Ej: 1234567-8')
@@ -150,7 +144,6 @@ class ExpedienteResource extends Resource
                                         Forms\Components\TextInput::make('telefono')
                                             ->label('N° Teléfono:')
                                             ->placeholder('Ej: 0984123456')
-                                            ->required()
                                             ->maxLength(20),
                                         Forms\Components\TextInput::make('email')
                                             ->label('Correo:')
@@ -170,8 +163,7 @@ class ExpedienteResource extends Resource
                                             ->options([
                                                 'PERSONA FÍSICA' => 'PERSONA FÍSICA',
                                                 'PERSONA JURÍDICA' => 'PERSONA JURÍDICA',
-                                            ])
-                                            ->required(),
+                                            ]),
                                         Forms\Components\Hidden::make('creado_por')->default(auth()->id())
                                     ])->columns(3)
                             ]),
@@ -367,10 +359,9 @@ class ExpedienteResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery()
-            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'expediente_estado_id', 'tipo_fuente_id', 'expediente_prioridad_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'created_at', 'updated_at')
-            ->with(['estado', 'prioridad', 'departamento', 'ciudadano', 'comentarios', 'tipoFuente'])
-            ->orderBy('expediente_prioridad_id', 'desc')
-            ->orderBy('created_at', 'desc');
+            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'tipo_fuente_id', 'expediente_estado_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'created_at', 'updated_at')
+            ->with(['estado', 'departamento', 'ciudadano', 'comentarios', 'tipoFuente'])
+            ->orderBy('mesa_entrada_completa', 'desc');
 
         $user = Auth::user();
 

@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             CiudadSeeder::class,
             PaisSeeder::class,
             DepartamentoSeeder::class,
-            ExpedienteTipoGestionSeeder::class,
+            TipoTitularSeeder::class,
             ExpedienteTipoFuenteSeeder::class,
         ]);
     }

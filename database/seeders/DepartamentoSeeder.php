@@ -96,7 +96,8 @@ class DepartamentoSeeder extends Seeder
             "PRESIDENCIA NACIONAL",
             "RECEPCIÓN DE SECRETARIA NACIONAL",
             "SECRETARIA NACIONAL",
-            "TESORERIA NACIONAL"
+            "TESORERIA NACIONAL",
+            "TODOS LOS DEPARTAMENTOS"
         ];
 
         // Iterar sobre el array de estados y insertar cada una en la base de datos

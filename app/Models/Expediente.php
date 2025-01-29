@@ -12,6 +12,7 @@ use App\Models\Expediente\Estado as ExpedienteEstado;
 use App\Models\Expediente\Prioridad;
 use App\Models\Expediente\TipoFuente;
 use App\Models\Expediente\TipoGestion;
+use App\Models\Expediente\TipoTitular;
 use App\Models\Vistas\Personal as VistaPersonal;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,12 +36,13 @@ class Expediente extends Model implements Auditable
         'nro_mesa_entrada_anho',
         'mesa_entrada_anho',
         'tipo_fuente_id',
-        'tipo_gestion_id',
+        'tipo_titular_id',
         'expediente_estado_id',
-        'expediente_prioridad_id',
         'expediente_departamento_id',
         'expediente_ciudadano_id',
         'personal_id',
+        'tit_compania_id',
+        'tit_departamento_id',
         'agrego_usuario_id',
     ];
 
@@ -56,10 +58,10 @@ class Expediente extends Model implements Auditable
         return $this->belongsTo(Departamento::class, 'expediente_departamento_id');
     }
 
-    // Relación: Un Expediente tiene una sola Prioridad
-    public function prioridad()
+    // Relación: Un Expediente tiene un solo DepartamentoTitular
+    public function departamentoTitular()
     {
-        return $this->belongsTo(Prioridad::class, 'expediente_prioridad_id');
+        return $this->belongsTo(Departamento::class, 'tit_departamento_id');
     }
 
     // Relación: Un Expediente tiene un solo Ciudadano
@@ -102,12 +104,12 @@ class Expediente extends Model implements Auditable
     }
 
     /**
-     * Relación de "TipoGestion" a "Expediente" (uno a muchos inverso).
-     * Cada expediente tiene un solo tipo de gestion.
+     * Relación de "TipoTitular" a "Expediente" (uno a muchos inverso).
+     * Cada expediente tiene un solo tipo de titular.
      */
-    public function tipoGestion()
+    public function tipoTitular()
     {
-        return $this->belongsTo(TipoGestion::class, 'tipo_gestion_id');
+        return $this->belongsTo(TipoTitular::class, 'tipo_titular_id');
     }
 
     public function mostrarNombrePersonal()
