@@ -358,8 +358,8 @@ class ExpedienteResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery()
-            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'tipo_fuente_id', 'expediente_estado_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'created_at', 'updated_at')
-            ->with(['estado', 'departamento', 'ciudadano', 'comentarios', 'tipoFuente'])
+            ->select('id_expediente', 'expediente_asunto', 'mesa_entrada_completa', 'tipo_fuente_id', 'expediente_estado_id', 'expediente_departamento_id', 'expediente_ciudadano_id', 'personal_id', 'tit_compania_id', 'tit_departamento_id', 'agrego_usuario_id', 'created_at', 'updated_at')
+            ->with(['estado', 'departamento', 'ciudadano', 'comentarios', 'tipoFuente', 'departamentoTitular', 'companiaTitular', 'personalTitular'])
             ->orderBy('mesa_entrada_completa', 'desc');
 
         $user = Auth::user();

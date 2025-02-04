@@ -26,6 +26,12 @@ class Departamento extends Model implements Auditable
         return $this->hasMany(Expediente::class);
     }
 
+    // Relación: Un DepartemantoTitular tiene varios Expedientes
+    public function expedienteTitular()
+    {
+        return $this->hasMany(Expediente::class);
+    }
+
     // Relación: Un Departemanto tiene varios Usuarios
     public function usuarios()
     {

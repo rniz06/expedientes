@@ -173,7 +173,11 @@ class ViewExpediente extends ViewRecord
                                 TextEntry::make('expediente_asunto')->label('Asunto:'),
                                 TextEntry::make('mesa_entrada_completa')->label('N° Mesa Entrada:')->badge(),
                                 TextEntry::make('estado.expediente_estado')->label('Estado:')->badge(),
-                                TextEntry::make('ciudadano.nombre_completo')->label('Responsable:'),
+                                //TextEntry::make('ciudadano.nombre_completo')->label('Titular:')->visible(fn ($record) => !is_null($record->ciudadano?->nombre_completo)),
+                                TextEntry::make('ciudadano.nombre_completo')->label('Titular:')->visible(fn ($record) => !is_null($record->expediente_ciudadano_id)), // Visible dependiendo del campo del titular
+                                TextEntry::make('departamentoTitular.departamento_nombre')->label('Titular:')->visible(fn ($record) => !is_null($record->tit_departamento_id)), // Visible dependiendo del campo del titular
+                                TextEntry::make('companiaTitular.compania')->label('Titular:')->visible(fn ($record) => !is_null($record->tit_compania_id)), // Visible dependiendo del campo del titular
+                                TextEntry::make('personalTitular.nombrecompleto')->label('Titular:')->visible(fn ($record) => !is_null($record->personal_id)), // Visible dependiendo del campo del titular
                                 TextEntry::make('departamento.departamento_nombre')->label('Dirección Actual:')->badge(),
                                 TextEntry::make('departamentosConCopia.departamento_nombre')->label('Con Copia a:')->badge(),
                                 RepeatableEntry::make('archivos')

@@ -14,6 +14,7 @@ use App\Models\Expediente\TipoFuente;
 use App\Models\Expediente\TipoGestion;
 use App\Models\Expediente\TipoTitular;
 use App\Models\Vistas\Personal as VistaPersonal;
+use App\Models\Vistas\VtCompania;
 use Illuminate\Database\Eloquent\Model;
 
 #[ObservedBy([ExpedienteObserver::class])]
@@ -110,6 +111,17 @@ class Expediente extends Model implements Auditable
     public function tipoTitular()
     {
         return $this->belongsTo(TipoTitular::class, 'tipo_titular_id');
+    }
+
+    // Relacion Con la Vista de Vt_companias de la otra base de datos
+    public function companiaTitular()
+    {
+        return $this->belongsTo(VtCompania::class, 'tit_compania_id', 'idcompanias');
+    }
+
+    public function personalTitular()
+    {
+        return $this->belongsTo(VistaPersonal::class, 'personal_id', 'idpersonal');
     }
 
     public function mostrarNombrePersonal()

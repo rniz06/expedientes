@@ -2,6 +2,7 @@
 
 namespace App\Models\Vistas;
 
+use App\Models\Expediente;
 use Illuminate\Database\Eloquent\Model;
 
 class VtCompania extends Model
@@ -11,6 +12,11 @@ class VtCompania extends Model
     protected $table = "vt_companias";
 
     protected $primaryKey = 'idcompanias';
+
+    public function expedienteTitular()
+    {
+        return $this->hasMany(Expediente::class, 'tit_compania_id', 'idcompanias');
+    }
 
     public static function obtenerCompaniaDepartamentoCiudad()
     {
